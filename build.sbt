@@ -2,7 +2,7 @@ val org                    = "com.sksamuel.elastic4s"
 val AkkaVersion            = "2.6.13"
 val AkkaHttpVersion        = "10.2.3"
 val CatsVersion            = "2.0.0"
-val CatsEffectVersion      = "3.0.1"
+val CatsEffectVersion      = "3.1.1"
 val CatsEffect2Version     = "2.4.1"
 val CirceVersion           = "0.13.0"
 val CommonsIoVersion       = "2.8.0"
@@ -43,8 +43,8 @@ def ossrhPassword = sys.env.getOrElse("OSSRH_PASSWORD", "")
 
 
 lazy val commonScalaVersionSettings = Seq(
-  scalaVersion := "2.12.12",
-  crossScalaVersions := Seq("2.12.12", "2.13.5")
+  scalaVersion := "2.13.6",
+  crossScalaVersions := Seq("2.13.6")
 )
 
 lazy val warnUnusedImport = Seq(
@@ -92,11 +92,11 @@ lazy val commonJvmSettings = Seq(
 
 lazy val commonDeps = Seq(
   libraryDependencies ++= Seq(
-    "com.sksamuel.exts" %% "exts" % ExtsVersion,
+    "com.sksamuel.exts" %% "exts" % ExtsVersion cross CrossVersion.for3Use2_13,
     "org.slf4j" % "slf4j-api" % Slf4jVersion,
-    "org.scalatest" %% "scalatest" % ScalatestVersion % "test",
+    "org.scalatest" %% "scalatest" % ScalatestVersion % "test" cross CrossVersion.for3Use2_13,
     "org.mockito" % "mockito-core" % MockitoVersion % "test",
-    "org.scalatestplus" %% ScalatestPlusMockitoArtifactId % ScalatestPlusVersion % "test"
+    "org.scalatestplus" %% ScalatestPlusMockitoArtifactId % ScalatestPlusVersion % "test" cross CrossVersion.for3Use2_13
   )
 )
 
@@ -178,7 +178,7 @@ lazy val domain = (project in file("elastic4s-domain"))
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion,
       "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion cross CrossVersion.for3Use2_13
     )
   )
 
@@ -189,19 +189,19 @@ lazy val json_builder = (project in file("elastic4s-json-builder"))
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion,
       "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion cross CrossVersion.for3Use2_13
     )
   )
 
 lazy val core = (project in file("elastic4s-core"))
   .settings(name := "elastic4s-core")
   .dependsOn(domain, clientcore, handlers, json_builder)
-  .settings(allSettings)
+  .settings(allSettings, scalaVersion := "3.0.0", crossScalaVersions := Seq("2.13.6", "3.0.0"))
   .settings(
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion,
       "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion cross CrossVersion.for3Use2_13
     )
   )
 
@@ -213,7 +213,7 @@ lazy val handlers = (project in file("elastic4s-handlers"))
     libraryDependencies ++= Seq(
       "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion,
       "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion cross CrossVersion.for3Use2_13
     )
   )
 
@@ -237,7 +237,7 @@ lazy val clientesjava = (project in file("elastic4s-client-esjava"))
       "org.apache.logging.log4j" % "log4j-api" % Log4jVersion % "test",
       "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion,
       "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion exclude("org.scala-lang", "scala-library")
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion exclude("org.scala-lang", "scala-library") cross CrossVersion.for3Use2_13
     )
   )
 
@@ -287,8 +287,8 @@ lazy val scalaz = (project in file("elastic4s-effect-scalaz"))
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalaz" %% "scalaz-core" % ScalazVersion,
-      "org.scalaz" %% "scalaz-concurrent" % ScalazVersion
+      "org.scalaz" %% "scalaz-core" % ScalazVersion cross CrossVersion.for3Use2_13,
+      "org.scalaz" %% "scalaz-concurrent" % ScalazVersion cross CrossVersion.for3Use2_13
     )
   )
 
@@ -298,7 +298,7 @@ lazy val monix = (project in file("elastic4s-effect-monix"))
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "io.monix" %% "monix" % MonixVersion
+      "io.monix" %% "monix" % MonixVersion cross CrossVersion.for3Use2_13
     )
   )
 
@@ -308,8 +308,8 @@ lazy val testkit = (project in file("elastic4s-testkit"))
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % ScalatestVersion,
-      "org.scalatestplus" %% ScalatestPlusMockitoArtifactId % ScalatestPlusVersion
+      "org.scalatest" %% "scalatest" % ScalatestVersion cross CrossVersion.for3Use2_13,
+      "org.scalatestplus" %% ScalatestPlusMockitoArtifactId % ScalatestPlusVersion cross CrossVersion.for3Use2_13
     )
   )
 
@@ -321,7 +321,7 @@ lazy val httpstreams = (project in file("elastic4s-http-streams"))
     libraryDependencies += "com.typesafe.akka"   %% "akka-actor"          % AkkaVersion,
     libraryDependencies += "org.reactivestreams" % "reactive-streams"     % ReactiveStreamsVersion,
     libraryDependencies += "org.reactivestreams" % "reactive-streams-tck" % ReactiveStreamsVersion % "test",
-    libraryDependencies += "org.scalatestplus" %% "testng-6-7" % ScalatestPlusVersion % "test"
+    libraryDependencies += "org.scalatestplus" %% "testng-6-7" % ScalatestPlusVersion % "test" cross CrossVersion.for3Use2_13
   )
 
 lazy val akkastreams = (project in file("elastic4s-streams-akka"))
@@ -339,7 +339,7 @@ lazy val jackson = (project in file("elastic4s-json-jackson"))
   .settings(
     libraryDependencies += "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion,
     libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion,
-    libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion exclude("org.scala-lang", "scala-library")
+    libraryDependencies += "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion exclude("org.scala-lang", "scala-library") cross CrossVersion.for3Use2_13
   )
 
 lazy val circe = (project in file("elastic4s-json-circe"))
@@ -407,7 +407,7 @@ lazy val tests = (project in file("elastic4s-tests"))
       "org.mockito" % "mockito-core" % MockitoVersion % "test",
       "com.fasterxml.jackson.core" % "jackson-core" % JacksonVersion % "test",
       "com.fasterxml.jackson.core" % "jackson-databind" % JacksonVersion % "test",
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion % "test" exclude("org.scala-lang", "scala-library"),
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonVersion % "test" exclude("org.scala-lang", "scala-library") cross CrossVersion.for3Use2_13,
       "org.apache.logging.log4j" % "log4j-api" % "2.12.0" % "test",
       "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.12.0" % "test",
       "org.apache.logging.log4j" % "log4j-core" % "2.12.0" % "test"
